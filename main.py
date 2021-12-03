@@ -1,4 +1,4 @@
-import puzzles.day2 as main
+import puzzles.day3 as main
 
 
 if __name__ == '__main__':
