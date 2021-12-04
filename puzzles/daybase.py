@@ -15,6 +15,6 @@ class DayBase(ABC):
     def puzzle2(self):
         pass
 
-    def get_data(self):
-        with open(f'data/day{self.num}data.txt', 'r') as file:
+    def get_data(self, example=False):
+        with open(f'data/day{self.num}{"ex" if example else ""}data.txt', 'r') as file:
             return file.readlines()
