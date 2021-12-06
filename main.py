@@ -1,5 +1,4 @@
-from puzzles.day5 import Day
-import numpy as np
+from puzzles.day6 import Day
 
 
 if __name__ == '__main__':
