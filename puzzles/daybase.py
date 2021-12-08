@@ -17,4 +17,4 @@ class DayBase(ABC):
 
     def get_data(self, example=False):
         with open(f'data/day{self.num}{"ex" if example else ""}data.txt', 'r') as file:
-            return file.readlines()
+            return [l.replace('\n', '') for l in file.readlines()]
