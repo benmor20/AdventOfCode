@@ -7,7 +7,7 @@ class Day(DayBase):
         return 1
 
     def get_data(self, example=False):
-        return [int(i) for i in super().get_data(example)[0].split(',')]
+        return [int(i) for i in super().get_data(example)]
 
     def puzzle1(self):
         pass
