@@ -211,3 +211,16 @@ class TriLinkedList(LinkedList):
 
     def pushrightmid(self, val):
         pass
+
+
+class BinaryTree:
+    def __init__(self, root):
+        self.root = root
+
+
+def add_tuples(tuples):
+    return tuple(sum(t[i] for t in tuples) for i in range(len(tuples)))
+
+
+def signum(v):
+    return 0 if v == 0 else abs(v) / v
