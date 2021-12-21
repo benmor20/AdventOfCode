@@ -12,7 +12,11 @@ def move(start, amt):
     return res
 
 
+memo = {}
 def num_universes(positions, points=(0, 0), turn=0):
+    t = tuple(positions + list(points) + [turn])
+    if t in memo:
+        return memo[t]
     if points[0] >= 21:
         return 1, 0
     elif points[1] >= 21:
@@ -24,10 +28,9 @@ def num_universes(positions, points=(0, 0), turn=0):
         new_points = [points[0], points[1]]
         new_points[turn] += new_pos[turn]
         res = num_universes(new_pos, new_points, 1-turn)
-        if 0 in points:
-            print(f'{points} with roll {roll}: {res}')
         unis[0] += res[0] * coef
         unis[1] += res[1] * coef
+    memo[t] = unis
     return unis
 
 
