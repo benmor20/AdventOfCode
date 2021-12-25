@@ -1,4 +1,4 @@
-from puzzles.day24 import Day
+from puzzles.day25 import Day
 
 
 if __name__ == '__main__':
