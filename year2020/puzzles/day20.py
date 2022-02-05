@@ -1,11 +1,11 @@
 import itertools
 from typing import *
 from scipy.signal import correlate2d
-
-from year2020.day2020 import Day2020
-
 import numpy as np
 from collections import Counter
+
+from year2020.day2020 import Day2020
+from utils.symmetry import D4Group, D4
 
 
 def print_tile(tile):
@@ -32,58 +32,17 @@ def flatten(lst):
             yield ele
 
 
-def rot0(edges):
-    return edges
-
 def rot90(edges):
     return edges[1], edges[2], edges[3], edges[0]
-
-def rot180(edges):
-    return rot90(rot90(edges))
-
-def rot270(edges):
-    return rot180(rot90(edges))
 
 def flip_horz(edges):
     return reverse_binary(edges[2]), reverse_binary(edges[1]), reverse_binary(edges[0]), reverse_binary(edges[3])
 
-def flip_vert(edges):
-    return flip_horz(rot180(edges))
-
-def flip_diag(edges):
-    return flip_horz(rot90(edges))
-
-def flip_diag2(edges):
-    return rot90(flip_horz(edges))
-
-D4_EDGES = [rot0, rot90, rot180, rot270, flip_horz, flip_vert, flip_diag, flip_diag2]
-
-def rot0grid(grid):
-    return grid
-
-def rot180grid(grid):
-    return np.rot90(np.rot90(grid))
-
-def rot270grid(grid):
-    return np.rot90(rot180grid(grid))
-
-def flip_horz_grid(grid):
-    return np.flip(grid, 0)
-
-def flip_vert_grid(grid):
-    return np.flip(grid, 1)
-
-def flip_diag_grid(grid):
-    return flip_horz_grid(np.rot90(grid))
-
-def flip_diag2_grid(grid):
-    return np.rot90(flip_horz_grid(grid))
-
-D4 = [rot0grid, np.rot90, rot180grid, rot270grid, flip_horz_grid, flip_vert_grid, flip_diag_grid, flip_diag2_grid]
+D4_EDGES = D4Group(rot90, flip_horz)
 
 
 def get_transformed_tile(tiles, tile_info):
-    return D4[tile_info[1]](tiles[tile_info[0]])
+    return D4.transforms[tile_info[1]](tiles[tile_info[0]])
 
 
 MONSTER_STR = ("                  # "
@@ -116,7 +75,7 @@ class Day(Day2020):
         # Since can always reverse, give each edge unique id based on lower binary
         tiles_to_bin_edges: Dict[int, Tuple[int, int, int, int]] = {}
         tiles_to_all_edge_nums: Dict[int, Tuple[Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]]] = {}
-        tiles_to_min_edge: Dict[int, Tuple[int, int, int, int]] = {}
+        tiles_to_min_edge: Dict[int, Set[int]] = {}
         edges_to_tiles: Dict[int, List[int]] = {}
         for num, tile in tiles.items():
             default_edges = tuple(convert_from_bin(row) for row in
@@ -157,7 +116,7 @@ class Day(Day2020):
         # Choose first corner to put in top left. Can transform later
         grid_size = int(len(tiles) ** 0.5)
         grid_by_num: List[List[Optional[Tuple[int, int]]]] = [[None] * grid_size for _ in range(grid_size)]
-        for i, transform in enumerate(D4_EDGES):
+        for i, transform in enumerate(D4_EDGES.transforms):
             flipped = transform(tiles_to_bin_edges[corners[0]])
             if flipped[0] in one_inst and flipped[-1] in one_inst:
                 grid_by_num[0][0] = (corners[0], i)
@@ -176,7 +135,7 @@ class Day(Day2020):
                 prev_num, prev_transform_id = grid_by_num[i - 1][j]
                 prev_edge_index = 2
                 target_edge_index = 0
-            prev_edges = D4_EDGES[prev_transform_id](tiles_to_bin_edges[prev_num])
+            prev_edges = D4_EDGES.transforms[prev_transform_id](tiles_to_bin_edges[prev_num])
             target_edge = prev_edges[prev_edge_index]
 
             print(f'Prev is {prev_num} ({"left" if i == 0 else "above"}):')
@@ -186,7 +145,7 @@ class Day(Day2020):
             tile_id = [i for i in edges_to_tiles[target_edge] if i != prev_num][0]
             print(f'{i, j} goes to {tile_id}')
             to_place.remove(tile_id)
-            for trans_id, transform in enumerate(D4_EDGES):
+            for trans_id, transform in enumerate(D4_EDGES.transforms):
                 new_edges = transform(tiles_to_bin_edges[tile_id])
                 if reverse_binary(new_edges[target_edge_index]) == target_edge:
                     print(f'{transform.__name__} puts {target_edge} in position {target_edge_index} to match with position {prev_edge_index}')
@@ -194,7 +153,7 @@ class Day(Day2020):
                     grid_by_num[i][j] = (tile_id, trans_id)
                     break
         print()
-        for row in rot0grid(np.array(grid_by_num)[:, :, 0]):
+        for row in np.array(grid_by_num)[:, :, 0]:
             for info in row:
                 print(info, end=' ')
             print()
@@ -203,7 +162,7 @@ class Day(Day2020):
         # Create the grid
         grid = np.zeros((grid_size * 8, grid_size * 8))
         for i, j in itertools.product(range(grid_size), repeat=2):
-            print(f'Placing {grid_by_num[i][j][0]} at {i, j} with transform {D4[grid_by_num[i][j][1]].__name__}')
+            print(f'Placing {grid_by_num[i][j][0]} at {i, j} with transform {D4.transforms[grid_by_num[i][j][1]].__name__}')
             trans_tile = get_transformed_tile(tiles, grid_by_num[i][j])
             if i > 0:
                 above_tile = get_transformed_tile(tiles, grid_by_num[i - 1][j])
@@ -218,7 +177,7 @@ class Day(Day2020):
         print_tile(grid)
         print_tile(KERNEL)
         trans_to_monsters = {}
-        for transform in D4:
+        for transform in D4.transforms:
             trans_to_monsters[transform] = np.sum(correlate2d(transform(grid), KERNEL) == np.sum(KERNEL))
 
         # Number of monsters is the max across the transforms
