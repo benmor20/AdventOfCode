@@ -9,3 +9,7 @@ def signum(v):
 def print_grid(grid):
     for row in grid:
         print(''.join('#' if c == 1 else '.' for c in row))
+
+def first_ele(obj):
+    for e in obj:
+        return e
