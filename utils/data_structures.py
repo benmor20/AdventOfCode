@@ -98,6 +98,14 @@ class LinkedList:
             n = n.right
         n.value = value
 
+    def __contains__(self, item):
+        current = self.head
+        while current.right is not None:
+            if current.value == item:
+                return True
+            current = current.right
+        return current.value == item
+
     def __repr__(self):
         s = '['
         n = self.head

@@ -8,7 +8,8 @@ def signum(v):
 
 def print_grid(grid):
     for row in grid:
-        print(''.join('#' if c == 1 else '.' for c in row))
+        print(''.join('#' if v == 1 or (isinstance(v, bool) and v) else '.' for v in row))
+
 
 def first_ele(obj):
     for e in obj:
