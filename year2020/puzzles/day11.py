@@ -37,12 +37,12 @@ def calculate_seen_seats(seats):
 
 def first_seat_in_dir(seats, pos, direc, start=True):
     if start:
-        return first_seat_in_dir(seats, add_tuples((pos, direc)), direc, False)
+        return first_seat_in_dir(seats, add_tuples(pos, direc), direc, False)
     if not in_range(pos, seats.shape):
         return None
     if seats[pos] > 0:
         return pos
-    return first_seat_in_dir(seats, add_tuples((pos, direc)), direc, False)
+    return first_seat_in_dir(seats, add_tuples(pos, direc), direc, False)
 
 
 def in_range(coords, shape):

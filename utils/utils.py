@@ -1,4 +1,4 @@
-def add_tuples(tuples):
+def add_tuples(*tuples):
     return tuple(sum(t[i] for t in tuples) for i in range(len(tuples)))
 
 
