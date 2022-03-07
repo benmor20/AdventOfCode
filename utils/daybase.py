@@ -16,7 +16,12 @@ class DayBase(ABC):
         pass
 
     def get_data(self, example=False):
-        with open(f'year{self.year}/data/day{self.num}{"ex" if example else ""}data.txt', 'r') as file:
+        ex_str = ''
+        if example:
+            ex_str = 'ex'
+            if not isinstance(example, bool):
+                ex_str += str(example)
+        with open(f'year{self.year}/data/day{self.num}{ex_str}data.txt', 'r') as file:
             return [l.replace('\n', '') for l in file.readlines()]
 
 
