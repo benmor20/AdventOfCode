@@ -1,29 +1,5 @@
 from year2019.day2019 import Day2019
-
-
-def step(pos, intcode):
-    opcode = intcode[pos]
-    if opcode == 99:
-        return True, intcode
-    if opcode == 1:
-        intcode[intcode[pos+3]] = intcode[intcode[pos+1]] + intcode[intcode[pos+2]]
-        return False, intcode
-    if opcode == 2:
-        intcode[intcode[pos+3]] = intcode[intcode[pos+1]] * intcode[intcode[pos+2]]
-        return False, intcode
-    raise ValueError(f'Opcode at position {pos} is {opcode}')
-
-
-def run(intcode, noun, verb):
-    runcode = intcode.copy()
-    runcode[1] = noun
-    runcode[2] = verb
-    end = False
-    pos = 0
-    while not end:
-        end, runcode = step(pos, runcode)
-        pos += 4
-    return runcode
+from year2019.intcode import Intcode
 
 
 class Day(Day2019):
@@ -38,12 +14,20 @@ class Day(Day2019):
         return data
 
     def puzzles(self):
-        intcode = self.get_data()
-        p1code = run(intcode, 12, 2)
-        print(f'Result is {p1code[0]}')
+        example = False
+        is_ex = not (isinstance(example, bool) and not example)
+        code = self.get_data(example)
+        if is_ex:
+            intcode = Intcode(code)
+        else:
+            intcode = Intcode(code, noun=12, verb=2)
+        print(f'Result is {intcode.run()[0]} (final intcode is {intcode.intcode})')
 
-        for i in range(9999):
-            noun, verb = divmod(i, 100)
-            p2code = run(intcode, noun, verb)
-            if p2code[0] == 19690720:
-                print(f'noun {noun}, verb {verb}, res {i}')
+        if not is_ex:
+            target = 19690720
+            for i in range(10000):
+                noun, verb = divmod(i, 100)
+                testcode = Intcode(code, noun=noun, verb=verb)
+                res = testcode.run()[0]
+                if res == target:
+                    print(f'Value to give {target} is {i}')
