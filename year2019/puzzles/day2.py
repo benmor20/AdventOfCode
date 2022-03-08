@@ -21,13 +21,13 @@ class Day(Day2019):
             intcode = Intcode(code)
         else:
             intcode = Intcode(code, noun=12, verb=2)
-        print(f'Result is {intcode.run()[0]} (final intcode is {intcode.intcode})')
+        print(f'Result is {intcode.run()[0][0]} (final intcode is {intcode.intcode})')
 
         if not is_ex:
             target = 19690720
             for i in range(10000):
                 noun, verb = divmod(i, 100)
                 testcode = Intcode(code, noun=noun, verb=verb)
-                res = testcode.run()[0]
+                res = testcode.run()[0][0]
                 if res == target:
                     print(f'Value to give {target} is {i}')

@@ -14,3 +14,12 @@ def print_grid(grid):
 def first_ele(obj):
     for e in obj:
         return e
+
+
+def to_digits(num, ndigs=-1):
+    digs = [int(i) for i in str(num)]
+    if ndigs == -1:
+        return digs
+    if ndigs >= len(digs):
+        return [0] * (ndigs - len(digs)) + digs
+    return digs[-ndigs:]
