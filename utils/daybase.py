@@ -19,7 +19,7 @@ class DayBase(ABC):
         ex_str = ''
         if example:
             ex_str = 'ex'
-            if not isinstance(example, bool):
+            if example > 1:
                 ex_str += str(example)
         with open(f'year{self.year}/data/day{self.num}{ex_str}data.txt', 'r') as file:
             return [l.replace('\n', '') for l in file.readlines()]
