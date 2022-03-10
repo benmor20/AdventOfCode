@@ -96,6 +96,13 @@ class Intcode:
             self.inputs = []
         self.outputs = []
         self.set(kwargs)
+        self.original_code = self.intcode.copy()
+
+    def reset(self, inputs: Optional[List[int]] = None):
+        self.intcode = self.original_code.copy()
+        self.outputs.clear()
+        self.inputs = inputs if inputs is not None else []
+        self.pointer = 0
 
     def set(self, values: Dict[Union[str, int], int]):
         for pos, value in values.items():
@@ -108,18 +115,41 @@ class Intcode:
             else:
                 raise ValueError(f'Unrecognized position: {pos}')
 
-    def step(self) -> bool:
+    def step(self, verbose=False) -> bool:
         modes_and_opcode = self.intcode[self.pointer]
         mode_num, opcode = divmod(modes_and_opcode, 100)
         operation = OPERATIONS[opcode]
         self.pointer += 1
         modes = list(map(mode_from_id, utils.to_digits(mode_num, operation.nargs)))[::-1]
-        return operation(self, modes)
+        if verbose:
+            og_intcode = self.intcode.copy()
+            og_pointer = self.pointer
+        res = operation(self, modes)
+        if verbose:
+            print(f'Opcode was {opcode}. Inputs are now {self.inputs}, outputs are {self.outputs}. Arg vals were {[arg_value(m, a, og_intcode) for m, a in zip(modes, self.intcode[og_pointer:og_pointer+operation.nargs])]}. Pointer is now at {self.pointer} with intcode of {self.intcode}')
+        return res
 
-    def run(self) -> Tuple[List[int], List[int]]:
-        while not self.step():
+    def _run_setup(self, reset: bool = False, inputs: Optional[List[int]] = None, verbose=False):
+        if reset:
+            self.reset(inputs=inputs)
+        elif inputs is not None:
+            self.inputs = inputs
+        if verbose:
+            print(f'Inputs are {self.inputs}')
+
+    def run(self, reset: bool = False, inputs: Optional[List[int]] = None, verbose: bool = False)\
+            -> Tuple[List[int], List[int]]:
+        self._run_setup(reset, inputs, verbose)
+        while not self.step(verbose=verbose):
             pass
         return self.intcode, self.outputs
+
+    def run_until_output(self, reset: bool = False, inputs: Optional[List[int]] = None, verbose: bool = False)\
+            -> Optional[int]:
+        self._run_setup(reset, inputs, verbose)
+        while len(self.outputs) == 0 and not self.step(verbose=verbose):
+            pass
+        return self.outputs.pop() if len(self.outputs) > 0 else None
 
     def __getitem__(self, item):
         return self.intcode[item]
