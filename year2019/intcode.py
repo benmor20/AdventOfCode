@@ -124,6 +124,14 @@ class Intcode:
             pass
         return self.outputs
 
+    def run_until_output(self, inputs: Optional[List[int]] = None, verbose: bool = False) -> Optional[int]:
+        start_len = len(self.outputs)
+        while len(self.outputs) == start_len:
+            done = self.step(verbose=verbose)
+            if done:
+                return None
+        return self.outputs.pop()
+
     def __len__(self):
         return len(self.code)
 
