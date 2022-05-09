@@ -125,12 +125,24 @@ class Intcode:
         return self.outputs
 
     def run_until_output(self, inputs: Optional[List[int]] = None, verbose: bool = False) -> Optional[int]:
+        if inputs is not None:
+            self.inputs = inputs
         start_len = len(self.outputs)
         while len(self.outputs) == start_len:
             done = self.step(verbose=verbose)
             if done:
                 return None
         return self.outputs.pop()
+
+    def run_until_io(self, verbose: bool = False):
+        try:
+            out = self.run_until_output(verbose=verbose)
+            if out is None:
+                return None
+            self.outputs.append(out)
+            return True
+        except IndexError:
+            return False
 
     def __len__(self):
         return len(self.code)
