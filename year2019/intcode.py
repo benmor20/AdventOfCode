@@ -135,14 +135,11 @@ class Intcode:
         return self.outputs.pop()
 
     def run_until_io(self, verbose: bool = False):
-        try:
-            out = self.run_until_output(verbose=verbose)
-            if out is None:
+        while self[self.pointer] % 100 not in (3, 4):
+            done = self.step(verbose=verbose)
+            if done:
                 return None
-            self.outputs.append(out)
-            return True
-        except IndexError:
-            return False
+        return self[self.pointer] % 100 == 4
 
     def __len__(self):
         return len(self.code)
