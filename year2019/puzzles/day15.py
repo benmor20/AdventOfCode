@@ -108,22 +108,22 @@ class Day(Day2019):
     def sense(self):
         res = []
         for code in range(1, 5):
-            assert not self.intcode.run_until_io()
-            self.intcode.inputs.append(code)
-            out = self.intcode.run_until_output()
+            self.intcode.give_input(code)
+            out = self.intcode.get_output()
             res.append(1 if out > 0 else 0)
             test_pos = utils.add_tuples(self.pos, DIR_MAP[code])
             self.tile_map[test_pos] = out
             if out > 0:
                 if out == 2:
                     self.o2_location = test_pos
-                assert not self.intcode.run_until_io()
-                self.intcode.inputs.append(rev_code(code))
-                assert self.intcode.run_until_output() > 0
+                self.intcode.give_input(rev_code(code))
+                assert self.intcode.get_output() > 0
         self.surroundings = res
 
     def think_explore(self):
         num_paths = sum(self.surroundings)
+        print_tiles(self.tile_map, self.pos)
+        print(f'Surroundings are {self.surroundings} ({num_paths} paths)')
         if num_paths == 1:
             if self.pos != (0, 0):
                 if len(self.to_revisit) == 0:
@@ -166,9 +166,8 @@ class Day(Day2019):
         return drctn
 
     def act(self, drctn):
-        assert not self.intcode.run_until_io()
-        self.intcode.inputs.append(drctn)
-        out = self.intcode.run_until_output()
+        self.intcode.give_input(drctn)
+        out = self.intcode.get_output()
         assert out > 0
         self.times_visited[self.pos] += 1
         self.pos = utils.add_tuples(self.pos, DIR_MAP[drctn])

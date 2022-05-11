@@ -132,14 +132,26 @@ class Intcode:
             done = self.step(verbose=verbose)
             if done:
                 return None
-        return self.outputs.pop()
 
     def run_until_io(self, verbose: bool = False):
         while self[self.pointer] % 100 not in (3, 4):
             done = self.step(verbose=verbose)
             if done:
                 return None
-        return self[self.pointer] % 100 == 4
+        if self[self.pointer] % 100 == 4:
+            self.step(verbose=verbose)
+            return True
+        return False
+
+    def give_input(self, *inp):
+        for val in inp:
+            assert not self.run_until_io()
+            self.inputs.append(val)
+            self.step()
+
+    def get_output(self):
+        self.run_until_output()
+        return self.outputs.pop()
 
     def __len__(self):
         return len(self.code)

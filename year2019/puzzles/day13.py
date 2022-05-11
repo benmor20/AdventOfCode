@@ -6,7 +6,7 @@ import numpy as np
 
 def get_input(grid):
     # while True:
-    #     inp = input('Enter L to move left, R to move right, or nothing to remain still. ')[:-1]
+    #     inp = input('Enter L to move left, R to move right, or nothing to remain still. ').replace('\n', '')
     #     if len(inp) == 0:
     #         return 0
     #     if inp.lower() == 'l':
@@ -41,14 +41,13 @@ def update_grid(intcode, grid, score):
         if not finished:
             return grid, score, finished is None
         x = intcode.outputs.pop()
-        assert intcode.run_until_io()
-        y = intcode.outputs.pop()
-        assert intcode.run_until_io()
+        y = intcode.get_output()
+        v = intcode.get_output()
         if x == -1 and y == 0:
             print('Score updated')
-            score = intcode.outputs.pop()
+            score = v
         else:
-            grid[x, y] = intcode.outputs.pop()
+            grid[x, y] = v
 
 
 def step(intcode, grid, score):
@@ -58,7 +57,7 @@ def step(intcode, grid, score):
     if end:
         print('Game over')
         return grid, score, True
-    intcode.inputs.append(get_input(grid))
+    intcode.give_input(get_input(grid))
     if np.all(grid != 2):
         return grid, score, True
     return grid, score, False
