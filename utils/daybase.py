@@ -12,16 +12,19 @@ class DayBase(ABC):
     def year(self) -> int:
         pass
 
-    def puzzles(self):
-        pass
-
-    def get_data(self, example=False):
+    def filepath(self, example = False):
         ex_str = ''
         if example:
             ex_str = 'ex'
             if example > 1:
                 ex_str += str(example)
-        with open(f'year{self.year}/data/day{self.num}{ex_str}data.txt', 'r') as file:
+        return f'year{self.year}/data/day{self.num}{ex_str}data.txt'
+
+    def puzzles(self):
+        pass
+
+    def get_data(self, example=False):
+        with open(self.filepath(example), 'r') as file:
             return [l.replace('\n', '') for l in file.readlines()]
 
 
