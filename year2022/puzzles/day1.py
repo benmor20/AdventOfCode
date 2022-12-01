@@ -21,3 +21,7 @@ class Day(Day2022):
         data = self.get_data()
         totals = [sum(e) for e in data]
         print(sum(sorted(totals)[-3:]))
+
+
+def one_line():
+    with open('year2022/data/day1data.txt', 'r') as f: print(str((cals := sorted([sum(map(int, e.split('\n'))) for e in f.read().split('\n\n')]))[-1]) + '\n' + str(sum(cals[-3:])))
