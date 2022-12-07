@@ -1,5 +1,5 @@
 try:
-    from year2022.puzzles.day6 import Day, one_line
+    from year2022.puzzles.day7 import Day, one_line
 except ImportError:
     pass
 
@@ -7,8 +7,9 @@ except ImportError:
 if __name__ == '__main__':
     day = Day()
     day.puzzles()
-    print('\n--------------ONE LINER--------------')
     try:
+        f = one_line
+        print('\n--------------ONE LINER--------------')
         one_line()
     except NameError as e:
-        print('Not implemented')
+        pass
