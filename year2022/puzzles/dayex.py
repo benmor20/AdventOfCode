@@ -12,7 +12,7 @@ class Day(Day2022):
         return data
 
     def puzzle1(self):
-        pass
+        data = self.get_data(True)
 
     def puzzle2(self):
-        pass
+        data = self.get_data(True)
