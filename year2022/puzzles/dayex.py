@@ -1,4 +1,5 @@
 from year2022.day2022 import Day2022
+from typing import *
 
 
 class Day(Day2022):
