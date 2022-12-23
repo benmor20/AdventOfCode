@@ -1,9 +1,26 @@
 from year2022.day2022 import Day2022
+from typing import *
 
 
 def distance(a, b):
     diff = a - b
     return abs(diff.real) + abs(diff.imag)
+
+
+def all_of_dist(origin: complex, dist: int) -> Generator[complex, None, None]:
+    pos = origin + dist
+    while pos.real > origin.real:
+        yield pos
+        pos += -1+1j
+    while pos.imag > origin.imag:
+        yield pos
+        pos += -1-1j
+    while pos.real < origin.real:
+        yield pos
+        pos += 1-1j
+    while pos != origin + dist:
+        yield pos
+        pos += 1+1j
 
 
 class Day(Day2022):
@@ -38,17 +55,17 @@ class Day(Day2022):
         print(len(seen))
 
     def puzzle2(self):
-        data = self.get_data()
-        max_size = 4000001
+        ex = False
+        data = self.get_data(ex)
+        max_size = 20 if ex else 4000000
         beacon_dists = {s: distance(s, b) for s, b in data}
-        for x in range(0, max_size):
-            for y in range(0, max_size):
-                pos = x + y*1j
-                never_in_range = True
-                for sensor, dist in beacon_dists.items():
-                    if distance(pos, sensor) <= dist:
-                        never_in_range = False
-                        break
-                if never_in_range:
-                    print(4000000 * x + y)
+        for sensor, dist in beacon_dists.items():
+            # print(f'Sensor {sensor} has a dist of')
+            for pt in all_of_dist(sensor, dist + 1):
+                # print()
+                if not (0 <= pt.real <= max_size and 0 <= pt.imag <= max_size):
+                    continue
+                if all(distance(pt, s) > d for s, d in beacon_dists.items()):
+                    print(4000000 * int(pt.real) + int(pt.imag))
                     return
+        assert False
