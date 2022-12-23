@@ -23,9 +23,12 @@ class DayBase(ABC):
     def puzzles(self):
         pass
 
-    def get_data(self, example=False):
+    def get_raw_data(self, example=False):
         with open(self.filepath(example), 'r') as file:
-            return [l.replace('\n', '') for l in file.readlines()]
+            return file.read()
+
+    def get_data(self, example=False):
+        return self.get_raw_data(example).split('\n')
 
 
 class DayBase2(DayBase, ABC):
