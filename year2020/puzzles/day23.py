@@ -1,5 +1,5 @@
 from year2020.day2020 import Day2020
-from utils.data_structures import Node, LinkedList
+from utils.linked_list import Node, LinkedList
 
 
 def print_circle(lnk_lst):
