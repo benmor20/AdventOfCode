@@ -46,7 +46,7 @@ class OptimizationTree(ABC, Generic[T]):
         for state, children in self._children_map.items():
             if require_leaf and children is not None:
                 continue
-            score = self.evaluate(state)
+            score = self._scores[state]
             if best is None or score > best[1]:
                 best = state, score
         return best
