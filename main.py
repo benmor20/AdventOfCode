@@ -1,5 +1,5 @@
 try:
-    from year2022.puzzles.day24 import Day, one_line
+    from year2022.puzzles.day25 import Day, one_line
 except ImportError:
     pass
 

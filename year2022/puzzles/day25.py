@@ -17,7 +17,6 @@ def snafu_to_dec(snafu: str) -> int:
 
 def dec_to_snafu(dec: int) -> str:
     res = ''
-    og = dec
     while dec != 0:
         val = dec % 5
         if val > 2:
@@ -25,7 +24,6 @@ def dec_to_snafu(dec: int) -> str:
         res += INT_TO_SNAFU[val]
         dec -= val
         dec //= 5
-    # print(f'{og} -> {res}')
     return res[::-1]
 
 
