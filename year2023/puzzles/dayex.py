@@ -17,3 +17,7 @@ class Day(Day2023):
 
     def puzzle2(self):
         data = self.get_data(True)
+
+
+def one_line():
+    pass
