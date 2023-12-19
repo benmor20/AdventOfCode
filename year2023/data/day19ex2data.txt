@@ -1,0 +1,5 @@
+in{x<2:abc,m>1:A,s>1:def,R}
+abc{s<2:R,A}
+def{a>1:abc,R}
+
+{x=1,m=1,a=1,s=1}
