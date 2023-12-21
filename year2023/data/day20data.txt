@@ -1,0 +1,58 @@
+%DB -> DC
+%BF -> BG
+%CK -> CY, CL
+%DI -> DJ, DY
+%BC -> BD
+&CY -> CA, CF, CC, CB, CZ
+&AZ -> ZZ
+%BG -> BY, BH
+%AB -> AY, AC
+%AC -> AD, AY
+%BK -> BL, BY
+&BZ -> ZZ
+%CG -> CY, CH
+%AA -> AB, AY
+%DL -> DY
+%DK -> DY, DL
+%AK -> AL, AY
+%DD -> DE
+%BL -> BY
+%CF -> CG
+START -> BA, DA, AA, CA
+%CJ -> CY, CK
+%BI -> BJ
+&CZ -> ZZ
+%BB -> BY, BC
+%BD -> BE
+%DA -> DB, DY
+%DJ -> DK, DY
+%DG -> DH
+&DY -> DZ, DH, DB, DG, DC, DD, DA
+%AI -> AJ
+%BH -> BY, BI
+%CB -> CC
+&DZ -> ZZ
+%BA -> BY, BB
+%DH -> DI
+&AY -> AD, AI, AA, AZ, AG
+%AD -> AE
+%AL -> AY
+%BE -> BF
+%BJ -> BY, BK
+%AJ -> AK, AY
+%CC -> CD
+%AH -> AY, AI
+%CA -> CY, CB
+&ZZ -> END
+%CH -> CI, CY
+%DE -> DF, DY
+%DC -> DD
+%AG -> AH
+%CL -> CY
+%CE -> CF, CY
+&BY -> BF, BD, BZ, BA, BI, BE, BC
+%AF -> AY, AG
+%AE -> AY, AF
+%CD -> CY, CE
+%DF -> DG, DY
+%CI -> CJ, CY
