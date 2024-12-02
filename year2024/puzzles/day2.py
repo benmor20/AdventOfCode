@@ -1,3 +1,5 @@
+import itertools
+
 from year2024.day2024 import Day2024
 from typing import *
 
@@ -53,4 +55,4 @@ class Day(Day2024):
 
 
 def one_line():
-    pass
+    return '\n'.join([reports := [[int(i) for i in line.strip().split()] for line in open('year2024/data/day2data.txt', 'r').readlines()], is_safe := lambda report: len(report) <= 1 or all(1 <= abs(a - b) <= 3 and (a < b) == (report[0] < report[1]) for a, b in itertools.pairwise(report)), is_safe_damp := lambda report: any(is_safe(report[:i] + report[i + 1:]) for i in range(len(report))), str(sum(is_safe(report) for report in reports)), str(sum(is_safe_damp(report) for report in reports))][-2:])
