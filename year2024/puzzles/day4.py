@@ -20,11 +20,6 @@ class Day(Day2024):
     def num(self) -> int:
         return 4
 
-    # def get_data(self, example=False):
-    #     lines = super().get_data(example)
-    #     data = []
-    #     return data
-
     def puzzle1(self):
         data = self.get_data()
         rows, cols = len(data), len(data[0])
@@ -61,5 +56,9 @@ class Day(Day2024):
         print(num_xmas)
 
 
+import numpy as np
+from scipy.signal import correlate2d
+
+
 def one_line():
-    pass
+    return '\n'.join([grid := np.array([['XMAS'.index(c) for c in line.strip()] for line in open('year2024/data/day4data.txt', 'r').readlines()]), p1base := np.array([[1, 4, 16, 64]]), p1kernels := [p1base, p1base.T, np.diagflat(p1base), np.diagflat(p1base)[::-1, :]], str(sum(np.sum(np.isin(correlate2d(grid, kernel, fillvalue=1), [27, 228])) for kernel in p1kernels)), str(np.sum(np.isin(correlate2d(grid, np.array([[1, 0, 4], [0, 16, 0], [64, 0, 256]])), [367, 487, 997, 877])))][-2:])
