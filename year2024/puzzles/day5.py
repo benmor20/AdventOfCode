@@ -60,10 +60,12 @@ class Day(Day2024):
                 i, j = idxs
                 update[i], update[j] = update[j], update[i]
             if swaps > 0:
-                print(swaps)
                 total += update[len(update) // 2]
         print(total)
 
 
+from functools import cmp_to_key
+
+
 def one_line():
-    pass
+    return '\n'.join([data_sections := open('year2024/data/day5data.txt', 'r').read().split('\n\n'), rules := {tuple(int(i) for i in line.split('|')) for line in data_sections[0].split('\n')}, updates := [[int(i) for i in line.split(',')] for line in data_sections[1].split('\n')], key := cmp_to_key(lambda a, b: -1 if (a, b) in rules else 1), str(sum(update[len(update) // 2] for update in updates if update == sorted(update, key=key))), str(sum(sorted_update[len(update) // 2] for update in updates if (sorted_update := sorted(update, key=key)) != update))][-2:])
