@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 def add_tuples(*tuples):
     return tuple(sum(t[i] for t in tuples) for i in range(len(tuples)))
 
@@ -40,3 +43,28 @@ def in_range(x, min_range, max_range=None):
         if not min_range[i] <= ele <= max_range[i]:
             return False
     return True
+
+
+def get_range_overlap(range1: range, range2: range) -> Optional[range]:
+    # assumes step of 1
+    # [range1] {range2}
+
+    if range1 == range2:
+        return range1
+    if range1.stop <= range2.start or range1.start >= range2.stop:
+        # [ ] { }
+        # { } [ ]
+        return None
+    if range2.start in range1 and range2.stop >= range1.stop:
+        # [ { ] }
+        return range(range2.start, range1.stop)
+    if range1.start in range2 and range1.stop in range2:
+        # { [ ] }
+        return range1
+    if range2.start in range1 and range2.stop in range1:
+        # [ { } ]
+        return range2
+    if range1.start in range2 and range1.stop >= range2.stop:
+        # { [ } ]
+        return range(range1.start, range2.stop)
+    assert False, f"{range1}, {range2}"
