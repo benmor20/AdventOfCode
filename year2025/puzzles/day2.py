@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from networkx.algorithms.minors.contraction import quotient_graph
 
-from utils.utils import get_range_overlap
+from utils.utils import get_range_intersection
 from year2025.day2025 import Day2025
 
 
@@ -27,7 +27,7 @@ class Divisor:
         return div in self.quotient_range
 
     def invalid_ids(self, id_range: range) -> Generator[int, None, None]:
-        overlap = get_range_overlap(id_range, self.effective_range)
+        overlap = get_range_intersection(id_range, self.effective_range)
         if overlap is None:
             return
         start_div, start_mod = divmod(overlap.start, self.divisor)

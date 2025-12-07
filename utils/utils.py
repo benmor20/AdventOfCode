@@ -45,7 +45,7 @@ def in_range(x, min_range, max_range=None):
     return True
 
 
-def get_range_overlap(range1: range, range2: range) -> Optional[range]:
+def get_range_intersection(range1: range, range2: range) -> Optional[range]:
     # assumes step of 1
     # [range1] {range2}
 
@@ -68,3 +68,17 @@ def get_range_overlap(range1: range, range2: range) -> Optional[range]:
         # { [ } ]
         return range(range1.start, range2.stop)
     assert False, f"{range1}, {range2}"
+
+
+def get_range_union(range1: range, range2: range) -> Optional[range]:
+    # assumes (near) overlap. will return null if no way to represent the union as a single set
+    if range1.start == range2.stop:
+        return range(range2.start, range1.stop)
+    if range1.stop == range2.start:
+        return range(range1.start, range2.stop)
+
+    intersection = get_range_intersection(range1, range2)
+    if intersection is None:
+        return None
+
+    return range(min(range1.start, range2.start), max(range1.stop, range2.stop))
