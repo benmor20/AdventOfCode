@@ -1,4 +1,4 @@
-from year2025.puzzles.day5 import Day, one_line
+from year2025.puzzles.day7 import Day, one_line
 
 
 if __name__ == '__main__':
