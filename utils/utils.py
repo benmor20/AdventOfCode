@@ -2,7 +2,11 @@ from typing import Optional
 
 
 def add_tuples(*tuples):
-    return tuple(sum(t[i] for t in tuples) for i in range(len(tuples)))
+    return tuple(sum(t[i] for t in tuples) for i in range(len(tuples[0])))
+
+
+def scale_tuple(tup, scalar):
+    return tuple(val * scalar for val in tup)
 
 
 def signum(v):
