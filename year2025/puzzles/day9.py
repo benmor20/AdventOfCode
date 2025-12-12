@@ -7,17 +7,17 @@ from matplotlib import pyplot as plt
 from year2025.day2025 import Day2025
 
 
+def drctn_between(start: complex, end: complex) -> complex:
+    diff = end - start
+    return 0 if diff == 0 else diff / abs(diff)
+
+
 def along_line(start: complex, end: complex, yield_bounds: bool) -> Generator[complex, None, None]:
     if yield_bounds:
         yield start
 
-    diff = end - start
-    if diff.imag == 0:
-        drctn = 1 if diff.real > 0 else -1
-    elif diff.real == 0:
-        drctn = 1j if diff.imag > 0 else -1j
-    else:
-        assert False
+    drctn = drctn_between(start, end)
+    assert drctn in [1, -1, 1j, -1j, 0]
 
     to_yield = start + drctn
     while to_yield != end:
@@ -159,24 +159,41 @@ class Day(Day2025):
         print(max_area)
 
     def puzzle2(self):
-        corner_tiles_small = self.get_data()
-        small_to_large_real = sorted(t.real for t in corner_tiles_small)
-        small_to_large_imag = sorted(t.imag for t in corner_tiles_small)
+        corner_tiles_large = self.get_data()
+        ntiles = len(corner_tiles_large)
+        small_to_large_real = sorted(t.real for t in corner_tiles_large)
+        small_to_large_imag = sorted(t.imag for t in corner_tiles_large)
         large_to_small_real = {t: idx for idx, t in enumerate(small_to_large_real)}
         large_to_small_imag = {t: idx for idx, t in enumerate(small_to_large_imag)}
-        corner_tiles_small = [large_to_small_real[t.real] + large_to_small_imag[t.imag] * 1j for t in corner_tiles_small]
+        corner_tiles_small = [large_to_small_real[t.real] + large_to_small_imag[t.imag] * 1j for t in corner_tiles_large]
+        adj_pts = {pt: (corner_tiles_small[idx - 1], corner_tiles_small[(idx + 1) % ntiles]) for idx, pt in enumerate(corner_tiles_small)}
+        adj_drctns = {pt: (drctn_between(pt, prev), drctn_between(pt, nxt)) for pt, (prev, nxt) in adj_pts.items()}
         tiles_small = set(corner_tiles_small)
         for idx, current in enumerate(corner_tiles_small):
             prev = corner_tiles_small[idx - 1]
             tiles_small.update(along_line(prev, current, False))
-        for real in range(len(corner_tiles_small)):
+        for real in range(len(corner_tiles_small) + 1):
             is_in_bounds = real in tiles_small
-            for imag in range(len(corner_tiles_small)):
+            for imag in range(len(corner_tiles_small) + 1):
                 pt = real + imag * 1j
-                if pt in tiles_small and (pt + 1j) not in tiles_small:
+                if pt in corner_tiles_small:
+                    assert 0 not in adj_drctns[pt], pt
+                    if adj_drctns[pt] in ((-1j, -1), (-1, -1j)) and (pt - 1 - 1j) in tiles_small:
+                        is_in_bounds = False
+                    elif adj_drctns[pt] in ((-1j, 1), (1, -1j)) and (pt - 1 - 1j) not in tiles_small:
+                        is_in_bounds = False
+                    else:
+                        is_in_bounds = True
+                elif pt in tiles_small and (pt + 1j) not in tiles_small:  # i.e. a horizontal edge
                     is_in_bounds = not is_in_bounds
                 if is_in_bounds:
                     tiles_small.add(pt)
+
+        # for imag in range(len(corner_tiles_small) + 1):
+        #     for real in range(len(corner_tiles_small) + 1):
+        #         pt = real + imag * 1j
+        #         print('@' if pt in corner_tiles_small else ('#' if pt in tiles_small else '.'), end='')
+        #     print()
 
         max_area = 0
         for a, b in itertools.combinations(corner_tiles_small, r=2):
